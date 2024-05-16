@@ -1,35 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePrice, setError } from "./redux/reducer";
+import { AppDispatch, RootState } from "./redux/store";
+import { connectWebSockets, closeWebSockets } from "./services/api";
+import { CRYPTOCURRENCIES } from "./constants/crypto-currencies";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch: AppDispatch = useDispatch();
+  const { prices, initialPrices, loading, error } = useSelector(
+    (state: RootState) => state.crypto
+  );
+
+  useEffect(() => {
+    connectWebSockets({
+      onMessage: ({ symbol, currentPrice }) => {
+        dispatch(updatePrice({ symbol, currentPrice }));
+      },
+      onError: (symbol, event) => {
+        dispatch(setError(`WebSocket error for ${symbol}: ${event.type}`));
+      },
+    });
+
+    return () => {
+      closeWebSockets();
+    };
+  }, []);
+
+  const calculatePercentageChange = (
+    initial: number | undefined,
+    current: number | undefined
+  ) => {
+    if (initial === undefined || current === undefined) return 0;
+    return ((current - initial) / initial) * 100;
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex flex-col w-[100vw] items-center justify-center h-full gap-10">
+      <h1 className="text-3xl">Trading data</h1>
+      <div className="border border-border-color rounded-lg p-4 ">
+        <div className="grid grid-cols-3 items-center font-bold text-sm">
+          <p>Name</p>
+          <p className="text-center">Price</p>
+          <p className="text-right">Change</p>
+        </div>
+
+        <ul className="mt-4">
+          {CRYPTOCURRENCIES.map((symbol) => {
+            const price = prices[symbol];
+
+            const percentage = calculatePercentageChange(
+              initialPrices[symbol],
+              prices[symbol]
+            );
+
+            const isPostive = Math.sign(percentage) === 1;
+
+            return (
+              <li
+                key={symbol}
+                className="grid grid-cols-3 gap-10 py-2 text-md font-bold"
+              >
+                <span>{symbol.toUpperCase()}</span>
+                <span className="text-center">${price.toFixed(2)}</span>
+                <span
+                  className={`text-right  ${
+                    isPostive ? "text-buy-color" : "text-sell-color"
+                  }`}
+                >
+                  {percentage.toFixed(2)}%
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
