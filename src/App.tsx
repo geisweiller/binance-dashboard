@@ -4,6 +4,7 @@ import { updatePrice, setError } from "./redux/reducer";
 import { AppDispatch, RootState } from "./redux/store";
 import { connectWebSockets, closeWebSockets } from "./services/api";
 import { CRYPTOCURRENCIES } from "./constants/crypto-currencies";
+import CoinLogo from "./components/coin-logo/icon";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -44,9 +45,9 @@ function App() {
 
   return (
     <div className="flex flex-col w-[100vw] items-center justify-center h-full gap-10">
-      <h1 className="text-3xl">Trading data</h1>
+      <h1 className="text-3xl font-bold">Market Overview</h1>
       <div className="border border-border-color rounded-lg p-4 ">
-        <div className="grid grid-cols-3 items-center font-bold text-sm">
+        <div className="grid grid-cols-3 items-center font-bold text-sm border-b border-border-color pb-4">
           <p>Name</p>
           <p className="text-center">Price</p>
           <p className="text-right">Change</p>
@@ -54,6 +55,10 @@ function App() {
 
         <ul className="mt-4">
           {CRYPTOCURRENCIES.map((symbol) => {
+            const coin = symbol.slice(0, -4);
+            const currency = symbol.slice(-4);
+            const name = `${coin.toUpperCase()}/${currency.toUpperCase()}`;
+
             const price = prices[symbol];
 
             const percentage = calculatePercentageChange(
@@ -68,7 +73,10 @@ function App() {
                 key={symbol}
                 className="grid grid-cols-3 gap-10 py-2 text-md font-bold"
               >
-                <span>{symbol.toUpperCase()}</span>
+                <span className="flex gap-2">
+                  <CoinLogo symbol={symbol} />
+                  {name.toUpperCase()}
+                </span>
                 <span className="text-center">${price.toFixed(2)}</span>
                 <span
                   className={`text-right  ${
