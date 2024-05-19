@@ -37,8 +37,8 @@ function CoinLogo({ symbol }: { symbol: string }) {
     <img
       src={renderSymbol(symbol).src}
       alt={renderSymbol(symbol).alt}
-      width={24}
-      height={24}
+      width={40}
+      height={40}
     />
   );
 }
