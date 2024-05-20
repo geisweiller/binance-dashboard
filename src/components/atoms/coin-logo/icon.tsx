@@ -1,6 +1,10 @@
-import { BtcIcon, DogeIcon, EthIcon, SolIcon } from "../../assets";
+import { BtcIcon, DogeIcon, EthIcon, SolIcon } from "../../../assets";
 
-function CoinLogo({ symbol }: { symbol: string }) {
+interface CoinLogoProps {
+  symbol: string;
+}
+
+function CoinLogo({ symbol }: CoinLogoProps) {
   const renderSymbol = (symbol: string) => {
     switch (symbol) {
       case "btcusdt":

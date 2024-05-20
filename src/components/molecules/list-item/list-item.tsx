@@ -1,21 +1,21 @@
-import CryptoNames from "../../enum/crypto";
-import USDollar from "../../utils/currency";
-import CoinLogo from "../coin-logo/icon";
+import { Atoms } from "../..";
+import CryptoNames from "../../../enum/crypto";
+import USDollar from "../../../utils/currency";
 
-interface iListItemProps {
+interface ListItemProps {
   symbol: "btcusdt" | "ethusdt" | "solusdt" | "dogeusdt";
   name: string;
-  percentage: number;
+  percent: number;
   price: number;
 }
 
-function ListItem({ symbol, name, percentage, price }: iListItemProps) {
-  const isPositive = Math.sign(percentage) === 1;
+function ListItem({ symbol, name, percent, price }: ListItemProps) {
+  const isPositive = Math.sign(percent) === 1;
 
   return (
     <li key={symbol} className="grid grid-cols-3 py-2 text-md font-bold">
       <span className="flex gap-2">
-        <CoinLogo symbol={symbol} />
+        <Atoms.CoinLogo symbol={symbol} />
         <div className="flex flex-col">
           <p>{name.toUpperCase()}</p>
           <p className="opacity-50"> {CryptoNames[symbol]}</p>
@@ -27,7 +27,7 @@ function ListItem({ symbol, name, percentage, price }: iListItemProps) {
           isPositive ? "text-buy-color" : "text-sell-color"
         }`}
       >
-        {percentage.toFixed(2)}%
+        {percent.toFixed(2)}%
       </span>
     </li>
   );
