@@ -9,7 +9,8 @@ export default {
       colors: {
         "border-color": "#2b3139",
         "buy-color": "#0ECB81",
-        "sell-color": "#F6465D"
+        "sell-color": "#F6465D",
+        "button-color": "#FCD535"
       }
     },
   },
