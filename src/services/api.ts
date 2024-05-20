@@ -7,6 +7,7 @@ let wsConnections: WebSocket[] = [];
 export const connectWebSockets = ({
   onMessage,
   onError,
+  onConnect,
 }: {
   onMessage: ({
     symbol,
@@ -16,12 +17,14 @@ export const connectWebSockets = ({
     currentPrice: number;
   }) => void;
   onError: (symbol: string, error: Event) => void;
+  onConnect: (symbol: string) => void;
 }) => {
   wsConnections = CRYPTOCURRENCIES.map((symbol) => {
     const ws = new WebSocket(`${WEBSOCKET_URL}/${symbol}@ticker`);
 
     ws.onopen = () => {
       console.log(`WebSocket connected for ${symbol}`);
+      onConnect(symbol);
     };
 
     ws.onmessage = (event) => {
