@@ -2,7 +2,7 @@
 
 ### Descrição:
 
-- Aplicação que consome a o websocket da Binance para mostrar os valores em tempo real das moedas BTC, ETH, SOl e DOGECOIN.
+- Aplicação que consome a o websocket da Binance para mostrar os valores em tempo real das moedas BTC, ETH, SOL e DOGECOIN.
 
   - Features:
     - Atualização de dados em tempo real.
